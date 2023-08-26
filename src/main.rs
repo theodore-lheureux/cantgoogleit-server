@@ -11,6 +11,7 @@ use sqlx::{Pool, Sqlite, SqlitePool};
 extern crate rocket;
 
 mod database;
+mod cors;
 
 const COOKIE_NAME: &str = "qid";
 
@@ -26,7 +27,7 @@ async fn create_classroom(
     }
 }
 
-#[post("/create_position/<classroom_id>")]
+#[get("/create_position/<classroom_id>")]
 async fn create_position(
     cookies: &CookieJar<'_>,
     pool: &State<Pool<Sqlite>>,
@@ -146,4 +147,5 @@ async fn rocket() -> _ {
             routes![create_classroom, create_position, get_cookie, set_username, get_positions],
         )
         .manage(pool)
+        .attach(cors::CORS)
 }
